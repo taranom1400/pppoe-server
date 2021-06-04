@@ -1,0 +1,59 @@
+hostname pppoe-client
+!
+username ali password 0 123
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.255
+!
+interface Ethernet0/0.200
+ encapsulation dot1Q 200
+ ip address 200.1.2.1 255.255.255.252
+ pppoe enable
+ pppoe-client dial-pool-number 13
+ pppoe-client dial-pool-number 12
+!
+interface Ethernet0/0.300
+ encapsulation dot1Q 300
+ ip address 100.1.2.1 255.255.255.252
+ pppoe enable group global
+ pppoe-client dial-pool-number 15
+ pppoe-client dial-pool-number 14
+!
+interface Dialer1
+ mtu 1492 
+ ip address negotiated
+ encapsulation ppp
+ dialer pool 12
+ ppp authentication pap
+ ppp pap sent-username taranom password 0 098
+!
+interface Dialer2
+ mtu 1492
+ ip address negotiated
+ encapsulation ppp
+ dialer pool 13
+ ppp authentication pap
+ ppp pap sent-username mina password 0 1234
+!
+interface Dialer3
+ mtu 1492
+ ip address negotiated
+ encapsulation ppp
+ dialer pool 14
+ ppp authentication pap
+ ppp pap sent-username pari password 0 123450
+!
+interface Dialer4
+ mtu 1492
+ ip address negotiated
+ encapsulation ppp
+ dialer pool 15
+ ppp authentication pap
+ ppp pap sent-username ali password 0 12345
+!
+!
+router eigrp 1
+ network 1.1.1.1 0.0.0.0
+ network 100.1.2.0 0.0.0.3
+!
+end
