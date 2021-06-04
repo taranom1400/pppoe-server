@@ -1,0 +1,40 @@
+hostname PPPOE-SERVER
+!
+username taranom password 0 098
+username mina password 0 1234
+username ali password 0 12345
+username pari password 0 123450
+!
+bba-group pppoe PPPOE1
+ virtual-template 1
+!
+interface Loopback0
+ ip address 2.2.2.2 255.255.255.255
+!
+interface Ethernet0/0.200
+ encapsulation dot1Q 200
+ ip address 200.1.2.2 255.255.255.252
+ pppoe enable group PPPOE1
+!
+interface Ethernet0/0.300
+ encapsulation dot1Q 300
+ ip address 100.1.2.2 255.255.255.252
+ pppoe enable group PPPOE1
+!         
+interface Virtual-Template1
+ ip unnumbered Loopback0
+ ip mtu 1492
+ peer default ip address pool PPPOE12
+ ppp authentication pap
+ ppp pap sent-username ali password 0 123
+ ppp ipcp dns 8.8.8.8 85.15.1.15
+!
+!
+router eigrp 1
+ network 2.0.0.0
+ network 2.2.2.2 0.0.0.0
+ network 100.1.2.0 0.0.0.3
+!
+ip local pool PPPOE12 1.1.1.10 1.1.1.200
+!
+end
